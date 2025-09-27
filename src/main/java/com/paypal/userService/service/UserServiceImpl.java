@@ -2,6 +2,8 @@ package com.paypal.userService.service;
 
 import com.paypal.userService.entity.User;
 import com.paypal.userService.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,14 +14,18 @@ public class UserServiceImpl implements UserService{
 
 
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository){
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder){
        this.userRepository = userRepository;
+       this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User createUser(User user) {
 
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return (User) userRepository.save(user);
     }
 
